@@ -2,8 +2,10 @@ import UserModel from '../models/UserModel.js';
 
 export async function getAll(req, res) {
   try {
-    if (req.user.level < 2) return res.sendStatus(403);
-
+    if (req.user.level < 2) {
+      const users = await UserModel.find().select('-password -link');
+      return res.json(users);
+    }
     const users = await UserModel.find().sort({ createdAt: -1 });
 
     return res.json(users);

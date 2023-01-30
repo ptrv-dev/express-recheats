@@ -26,7 +26,12 @@ export const upload = multer({ storage });
 
 const app = express();
 app.use(express.json());
-app.use(cors({ credentials: true, origin: ['http://localhost:8080'] }));
+app.use(
+  cors({
+    credentials: true,
+    origin: ['http://localhost:8080', 'http://localhost:8081'],
+  })
+);
 app.use(cookieParser());
 app.use('/static', express.static('./static/'));
 routes(app);

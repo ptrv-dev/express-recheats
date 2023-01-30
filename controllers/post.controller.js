@@ -21,7 +21,15 @@ export async function createOne(req, res) {
 
 export async function deleteOne(req, res) {
   try {
-    await PostModel.findByIdAndDelete(req.params.id);
+    const { id } = req.params;
+
+    const post = await PostModel.findById(id);
+
+    if (!post) return res.sendStatus(404);
+    if (req.user.level < 2 && post.author.toString() !== req.user._id)
+      return res.sendStatus(403);
+
+    await post.deleteOne();
     res.sendStatus(200);
   } catch (error) {
     console.log('[Error] Post delete error!!!');
@@ -78,8 +86,10 @@ export async function updateOne(req, res) {
   try {
     const { id } = req.params;
 
+    console.log(req.user.level, req.user._id);
+
     const post = await PostModel.findById(id);
-    if (req.user.level < 2 && post.author !== req.user._id)
+    if (req.user.level < 2 && post.author.toString() !== req.user._id)
       return res.sendStatus(403);
 
     await post.updateOne({
