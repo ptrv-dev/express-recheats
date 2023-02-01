@@ -72,7 +72,9 @@ export async function getAll(req, res) {
 
 export async function getOne(req, res) {
   try {
-    const post = await PostModel.findById(req.params.id).populate('category');
+    const post = await PostModel.findById(req.params.id)
+      .populate('category')
+      .populate('author', 'link');
     if (!post) return res.sendStatus(404);
     res.json(post);
   } catch (error) {
